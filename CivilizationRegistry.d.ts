@@ -7,7 +7,8 @@ export interface ICivilizationRegistry
   extends IConstructorRegistry<Civilization> {}
 export declare class CivilizationRegistry
   extends ConstructorRegistry<Civilization>
-  implements ICivilizationRegistry {
+  implements ICivilizationRegistry
+{
   constructor();
 }
 export declare const instance: CivilizationRegistry;

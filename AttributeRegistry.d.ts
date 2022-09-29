@@ -10,7 +10,8 @@ export interface IAttributeRegistry extends IEntityRegistry<Attribute> {
 }
 export declare class AttributeRegistry
   extends EntityRegistry<Attribute>
-  implements IAttributeRegistry {
+  implements IAttributeRegistry
+{
   constructor();
   getByCivilization(CivilizationType: typeof Civilization): Attribute[];
   getByName(name: string): Attribute[];

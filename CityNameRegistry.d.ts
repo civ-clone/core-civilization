@@ -10,7 +10,8 @@ export interface ICityNameRegistry extends IEntityRegistry<CityName> {
 }
 export declare class CityNameRegistry
   extends EntityRegistry<CityName>
-  implements ICityNameRegistry {
+  implements ICityNameRegistry
+{
   #private;
   constructor(randomNumberGenerator?: () => number);
   takeByCivilization(CivilizationType: typeof Civilization): string;

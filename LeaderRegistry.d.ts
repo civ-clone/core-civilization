@@ -12,7 +12,8 @@ export interface ILeaderRegistry extends IConstructorRegistry<Leader> {
 }
 export declare class LeaderRegistry
   extends ConstructorRegistry<Leader>
-  implements ILeaderRegistry {
+  implements ILeaderRegistry
+{
   constructor();
   getByCivilization(
     LeaderCivilization: IConstructor<Civilization>

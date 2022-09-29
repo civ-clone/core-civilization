@@ -16,7 +16,8 @@ export interface ILeaderRegistry extends IConstructorRegistry<Leader> {
 
 export class LeaderRegistry
   extends ConstructorRegistry<Leader>
-  implements ILeaderRegistry {
+  implements ILeaderRegistry
+{
   constructor() {
     super(Leader);
   }

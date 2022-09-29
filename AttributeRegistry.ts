@@ -12,7 +12,8 @@ export interface IAttributeRegistry extends IEntityRegistry<Attribute> {
 
 export class AttributeRegistry
   extends EntityRegistry<Attribute>
-  implements IAttributeRegistry {
+  implements IAttributeRegistry
+{
   constructor() {
     super(Attribute);
   }

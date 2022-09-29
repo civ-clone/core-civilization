@@ -21,9 +21,7 @@ export class Leader extends DataObject implements ILeader {
   constructor(traitRegistry: TraitRegistry = traitRegistryInstance) {
     super();
 
-    const traits = traitRegistry.getByLeader(
-      <IConstructor<Leader>>this.constructor
-    );
+    const traits = traitRegistry.getByLeader(this.sourceClass<typeof Leader>());
 
     this.#traits.push(...traits);
 

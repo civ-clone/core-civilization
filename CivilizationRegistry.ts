@@ -9,7 +9,8 @@ export interface ICivilizationRegistry
 
 export class CivilizationRegistry
   extends ConstructorRegistry<Civilization>
-  implements ICivilizationRegistry {
+  implements ICivilizationRegistry
+{
   constructor() {
     super(Civilization);
   }

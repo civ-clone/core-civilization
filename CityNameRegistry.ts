@@ -12,7 +12,8 @@ export interface ICityNameRegistry extends IEntityRegistry<CityName> {
 
 export class CityNameRegistry
   extends EntityRegistry<CityName>
-  implements ICityNameRegistry {
+  implements ICityNameRegistry
+{
   #counter: number = 1;
   #randomNumberGenerator: () => number;
 
