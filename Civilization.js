@@ -23,7 +23,7 @@ class Civilization extends DataObject_1.DataObject {
         _Civilization_cityNamesRegistry.set(this, void 0);
         _Civilization_attributes.set(this, new AttributeRegistry_1.AttributeRegistry());
         __classPrivateFieldSet(this, _Civilization_cityNamesRegistry, cityNamesRegistry, "f");
-        __classPrivateFieldGet(this, _Civilization_attributes, "f").register(...attributeRegistry.getByCivilization(this.constructor));
+        __classPrivateFieldGet(this, _Civilization_attributes, "f").register(...attributeRegistry.getByCivilization(this.sourceClass()));
         this.addKey('name', 'leader', 'attributes');
     }
     attributes() {
@@ -39,7 +39,7 @@ class Civilization extends DataObject_1.DataObject {
         __classPrivateFieldSet(this, _Civilization_leader, leader, "f");
     }
     getCityName(capital = false) {
-        const CivilizationType = this.constructor;
+        const CivilizationType = this.sourceClass();
         return capital
             ? __classPrivateFieldGet(this, _Civilization_cityNamesRegistry, "f").takeCapitalByCivilization(CivilizationType)
             : __classPrivateFieldGet(this, _Civilization_cityNamesRegistry, "f").takeByCivilization(CivilizationType);

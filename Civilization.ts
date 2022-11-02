@@ -10,9 +10,8 @@ import {
   DataObject,
   IDataObject,
 } from '@civ-clone/core-data-object/DataObject';
-import { IConstructor } from '@civ-clone/core-registry/Registry';
-import Leader from './Leader';
 import Attribute from './Attribute';
+import Leader from './Leader';
 
 export interface ICivilization extends IDataObject {
   attributes(): any[];
@@ -36,9 +35,7 @@ export class Civilization extends DataObject implements ICivilization {
     this.#cityNamesRegistry = cityNamesRegistry;
 
     this.#attributes.register(
-      ...attributeRegistry.getByCivilization(
-        <IConstructor<Civilization>>this.constructor
-      )
+      ...attributeRegistry.getByCivilization(this.sourceClass())
     );
 
     this.addKey('name', 'leader', 'attributes');
@@ -61,7 +58,7 @@ export class Civilization extends DataObject implements ICivilization {
   }
 
   getCityName(capital: boolean = false): string {
-    const CivilizationType = <typeof Civilization>this.constructor;
+    const CivilizationType = this.sourceClass<typeof Civilization>();
 
     return capital
       ? this.#cityNamesRegistry.takeCapitalByCivilization(CivilizationType)

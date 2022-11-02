@@ -4,8 +4,8 @@ import {
   DataObject,
   IDataObject,
 } from '@civ-clone/core-data-object/DataObject';
-import Leader from './Leader';
 import Attribute from './Attribute';
+import Leader from './Leader';
 export interface ICivilization extends IDataObject {
   attributes(): any[];
   name(): string;

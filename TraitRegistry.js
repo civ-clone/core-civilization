@@ -10,6 +10,9 @@ class TraitRegistry extends EntityRegistry_1.EntityRegistry {
     getByLeader(LeaderType) {
         return this.getBy('leader', LeaderType);
     }
+    getBySubclass(TraitType) {
+        return this.filter((trait) => trait instanceof TraitType);
+    }
 }
 exports.TraitRegistry = TraitRegistry;
 exports.instance = new TraitRegistry();

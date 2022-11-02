@@ -7,6 +7,7 @@ import Trait from './Trait';
 
 export interface ITraitRegistry extends IEntityRegistry<Trait> {
   getByLeader(LeaderType: typeof Leader): Trait[];
+  getBySubclass(TraitType: typeof Trait): Trait[];
 }
 
 export class TraitRegistry
@@ -19,6 +20,10 @@ export class TraitRegistry
 
   getByLeader(LeaderType: typeof Leader): Trait[] {
     return this.getBy('leader', LeaderType);
+  }
+
+  getBySubclass(TraitType: typeof Trait): Trait[] {
+    return this.filter((trait): boolean => trait instanceof TraitType);
   }
 }
 

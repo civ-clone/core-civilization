@@ -1,8 +1,8 @@
-import Civilization from './Civilization';
 import {
   DataObject,
   IDataObject,
 } from '@civ-clone/core-data-object/DataObject';
+import Civilization from './Civilization';
 
 export interface IAttribute extends IDataObject {
   civilization(): typeof Civilization;
