@@ -4,7 +4,9 @@ export interface ICityName {
   civilization(): typeof Civilization | null;
 }
 export declare class CityName implements ICityName {
-  #private;
+  private _name;
+  private _civilization;
+  private _capital;
   constructor(
     name: string,
     CivilizationType: typeof Civilization | null,

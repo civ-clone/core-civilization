@@ -14,7 +14,9 @@ export interface ICivilization extends IDataObject {
   getCityName(capital: boolean): string;
 }
 export declare class Civilization extends DataObject implements ICivilization {
-  #private;
+  private _leader;
+  private _cityNamesRegistry;
+  private _attributes;
   constructor(
     attributeRegistry?: AttributeRegistry,
     cityNamesRegistry?: CityNameRegistry

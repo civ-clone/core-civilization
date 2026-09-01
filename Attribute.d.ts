@@ -9,7 +9,9 @@ export interface IAttribute extends IDataObject {
   value(): any;
 }
 export declare class Attribute extends DataObject implements IAttribute {
-  #private;
+  private _civilization;
+  private _name;
+  private _value;
   constructor(CivilizationType: typeof Civilization, name: string, value: any);
   civilization(): typeof Civilization;
   name(): string;

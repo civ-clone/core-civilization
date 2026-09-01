@@ -11,30 +11,30 @@ export interface IAttribute extends IDataObject {
 }
 
 export class Attribute extends DataObject implements IAttribute {
-  #civilization: typeof Civilization;
-  #name: string;
-  #value: any;
+  private _civilization: typeof Civilization;
+  private _name: string;
+  private _value: any;
 
   constructor(CivilizationType: typeof Civilization, name: string, value: any) {
     super();
 
-    this.#civilization = CivilizationType;
-    this.#name = name;
-    this.#value = value;
+    this._civilization = CivilizationType;
+    this._name = name;
+    this._value = value;
 
     this.addKey('name', 'value');
   }
 
   civilization(): typeof Civilization {
-    return this.#civilization;
+    return this._civilization;
   }
 
   name(): string {
-    return this.#name;
+    return this._name;
   }
 
   value(): any {
-    return this.#value;
+    return this._value;
   }
 }
 

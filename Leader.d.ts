@@ -10,7 +10,7 @@ export interface ILeader extends IDataObject {
   traits(): Trait[];
 }
 export declare class Leader extends DataObject implements ILeader {
-  #private;
+  private _traits;
   constructor(traitRegistry?: TraitRegistry);
   static civilization(): typeof Civilization;
   name(): string;

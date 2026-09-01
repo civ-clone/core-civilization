@@ -16,14 +16,14 @@ export interface ILeader extends IDataObject {
 }
 
 export class Leader extends DataObject implements ILeader {
-  #traits: Trait[] = [];
+  private _traits: Trait[] = [];
 
   constructor(traitRegistry: TraitRegistry = traitRegistryInstance) {
     super();
 
     const traits = traitRegistry.getByLeader(this.sourceClass<typeof Leader>());
 
-    this.#traits.push(...traits);
+    this._traits.push(...traits);
 
     this.addKey('name');
   }
@@ -37,7 +37,7 @@ export class Leader extends DataObject implements ILeader {
   }
 
   traits(): Trait[] {
-    return [...this.#traits];
+    return [...this._traits];
   }
 }
 

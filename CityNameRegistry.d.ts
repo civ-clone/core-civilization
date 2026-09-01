@@ -12,7 +12,8 @@ export declare class CityNameRegistry
   extends EntityRegistry<CityName>
   implements ICityNameRegistry
 {
-  #private;
+  private _counter;
+  private _randomNumberGenerator;
   constructor(randomNumberGenerator?: () => number);
   takeByCivilization(CivilizationType: typeof Civilization): string;
   takeCapitalByCivilization(CivilizationType: typeof Civilization): string;

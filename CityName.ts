@@ -6,30 +6,30 @@ export interface ICityName {
 }
 
 export class CityName implements ICityName {
-  #name: string;
-  #civilization: typeof Civilization | null;
-  #capital: boolean = false;
+  private _name: string;
+  private _civilization: typeof Civilization | null;
+  private _capital: boolean = false;
 
   constructor(
     name: string,
     CivilizationType: typeof Civilization | null,
     capital: boolean = false
   ) {
-    this.#name = name;
-    this.#civilization = CivilizationType;
-    this.#capital = capital;
+    this._name = name;
+    this._civilization = CivilizationType;
+    this._capital = capital;
   }
 
   name(): string {
-    return this.#name;
+    return this._name;
   }
 
   civilization(): typeof Civilization | null {
-    return this.#civilization;
+    return this._civilization;
   }
 
   capital(): boolean {
-    return this.#capital;
+    return this._capital;
   }
 }
 

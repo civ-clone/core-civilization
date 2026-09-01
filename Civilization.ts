@@ -22,9 +22,9 @@ export interface ICivilization extends IDataObject {
 }
 
 export class Civilization extends DataObject implements ICivilization {
-  #leader: Leader | null = null;
-  #cityNamesRegistry: CityNameRegistry;
-  #attributes = new AttributeRegistry();
+  private _leader: Leader | null = null;
+  private _cityNamesRegistry: CityNameRegistry;
+  private _attributes = new AttributeRegistry();
 
   constructor(
     attributeRegistry: AttributeRegistry = attributeRegistryInstance,
@@ -32,9 +32,9 @@ export class Civilization extends DataObject implements ICivilization {
   ) {
     super();
 
-    this.#cityNamesRegistry = cityNamesRegistry;
+    this._cityNamesRegistry = cityNamesRegistry;
 
-    this.#attributes.register(
+    this._attributes.register(
       ...attributeRegistry.getByCivilization(this.sourceClass())
     );
 
@@ -42,7 +42,7 @@ export class Civilization extends DataObject implements ICivilization {
   }
 
   attributes(): Attribute[] {
-    return this.#attributes.entries();
+    return this._attributes.entries();
   }
 
   name(): string {
@@ -50,19 +50,19 @@ export class Civilization extends DataObject implements ICivilization {
   }
 
   leader(): Leader | null {
-    return this.#leader;
+    return this._leader;
   }
 
   setLeader(leader: Leader): void {
-    this.#leader = leader;
+    this._leader = leader;
   }
 
   getCityName(capital: boolean = false): string {
     const CivilizationType = this.sourceClass<typeof Civilization>();
 
     return capital
-      ? this.#cityNamesRegistry.takeCapitalByCivilization(CivilizationType)
-      : this.#cityNamesRegistry.takeByCivilization(CivilizationType);
+      ? this._cityNamesRegistry.takeCapitalByCivilization(CivilizationType)
+      : this._cityNamesRegistry.takeByCivilization(CivilizationType);
   }
 }
 

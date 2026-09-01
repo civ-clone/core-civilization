@@ -14,20 +14,20 @@ export class CityNameRegistry
   extends EntityRegistry<CityName>
   implements ICityNameRegistry
 {
-  #counter: number = 1;
-  #randomNumberGenerator: () => number;
+  private _counter: number = 1;
+  private _randomNumberGenerator: () => number;
 
   constructor(
     randomNumberGenerator: () => number = (): number => Math.random()
   ) {
     super(CityName);
 
-    this.#randomNumberGenerator = randomNumberGenerator;
+    this._randomNumberGenerator = randomNumberGenerator;
   }
 
   takeByCivilization(CivilizationType: typeof Civilization): string {
     const [cityName] = this.getBy('civilization', CivilizationType).sort(
-      (): number => Math.floor(this.#randomNumberGenerator() * 3) - 1
+      (): number => Math.floor(this._randomNumberGenerator() * 3) - 1
     );
 
     if (cityName instanceof CityName) {
@@ -41,7 +41,7 @@ export class CityNameRegistry
 
   takeCapitalByCivilization(CivilizationType: typeof Civilization): string {
     const [capitalName] = this.getBy('civilization', CivilizationType)
-      .sort((): number => Math.floor(this.#randomNumberGenerator() * 3) - 1)
+      .sort((): number => Math.floor(this._randomNumberGenerator() * 3) - 1)
       .filter((cityName: CityName): boolean => cityName.capital());
 
     if (capitalName instanceof CityName) {
@@ -55,7 +55,7 @@ export class CityNameRegistry
 
   private takeUnassociated(): string {
     const [cityName] = this.getBy('civilization', null).sort(
-      (): number => Math.floor(this.#randomNumberGenerator() * 3) - 1
+      (): number => Math.floor(this._randomNumberGenerator() * 3) - 1
     );
 
     if (cityName instanceof CityName) {
@@ -64,7 +64,7 @@ export class CityNameRegistry
       return cityName.name();
     }
 
-    return `City #${this.#counter++}`;
+    return `City #${this._counter++}`;
   }
 }
 
