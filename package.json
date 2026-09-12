@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@civ-clone/core-data-object": "^0.1.0",
+    "@civ-clone/core-random": "^0.1.0",
     "@civ-clone/core-registry": "^0.1.0",
     "@civ-clone/core-yield": "^0.1.0"
   }

@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.instance = exports.CityNameRegistry = void 0;
 const EntityRegistry_1 = require("@civ-clone/core-registry/EntityRegistry");
 const CityName_1 = require("./CityName");
+const core_random_1 = require("@civ-clone/core-random");
 class CityNameRegistry extends EntityRegistry_1.EntityRegistry {
-    constructor(randomNumberGenerator = () => Math.random()) {
+    constructor(randomNumberGenerator = core_random_1.instance) {
         super(CityName_1.default);
         this._counter = 1;
         this._randomNumberGenerator = randomNumberGenerator;

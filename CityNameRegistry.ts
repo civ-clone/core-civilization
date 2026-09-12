@@ -4,6 +4,7 @@ import {
 } from '@civ-clone/core-registry/EntityRegistry';
 import CityName from './CityName';
 import Civilization from './Civilization';
+import { instance as rngInstance } from '@civ-clone/core-random';
 
 export interface ICityNameRegistry extends IEntityRegistry<CityName> {
   takeByCivilization(CivilizationType: typeof Civilization): string;
@@ -17,9 +18,7 @@ export class CityNameRegistry
   private _counter: number = 1;
   private _randomNumberGenerator: () => number;
 
-  constructor(
-    randomNumberGenerator: () => number = (): number => Math.random()
-  ) {
+  constructor(randomNumberGenerator: () => number = rngInstance) {
     super(CityName);
 
     this._randomNumberGenerator = randomNumberGenerator;
