@@ -22,6 +22,7 @@ export interface ICivilization extends IDataObject {
 }
 
 export class Civilization extends DataObject implements ICivilization {
+  static readonly transient = ['_cityNamesRegistry', '_attributes'];
   private _leader: Leader | null = null;
   private _cityNamesRegistry: CityNameRegistry;
   private _attributes = new AttributeRegistry();

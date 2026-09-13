@@ -14,6 +14,7 @@ export interface ICivilization extends IDataObject {
   getCityName(capital: boolean): string;
 }
 export declare class Civilization extends DataObject implements ICivilization {
+  static readonly transient: string[];
   private _leader;
   private _cityNamesRegistry;
   private _attributes;

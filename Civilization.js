@@ -33,5 +33,6 @@ class Civilization extends DataObject_1.DataObject {
     }
 }
 exports.Civilization = Civilization;
+Civilization.transient = ['_cityNamesRegistry', '_attributes'];
 exports.default = Civilization;
 //# sourceMappingURL=Civilization.js.map
