@@ -25,42 +25,60 @@ export class CityNameRegistry
   }
 
   takeByCivilization(CivilizationType: typeof Civilization): string {
-    const [cityName] = this.getBy('civilization', CivilizationType).sort(
-      (): number => Math.floor(this._randomNumberGenerator() * 3) - 1
+    const cityName = this.pick(
+      this.getBy('civilization', CivilizationType).filter(
+        (cityName: CityName): boolean => !cityName.capital()
+      )
     );
 
-    if (cityName instanceof CityName) {
-      this.unregister(cityName);
-
-      return cityName.name();
+    if (cityName) {
+      return this.take(cityName);
     }
 
     return this.takeUnassociated();
   }
 
   takeCapitalByCivilization(CivilizationType: typeof Civilization): string {
-    const [capitalName] = this.getBy('civilization', CivilizationType)
-      .sort((): number => Math.floor(this._randomNumberGenerator() * 3) - 1)
-      .filter((cityName: CityName): boolean => cityName.capital());
+    const capitalName = this.pick(
+      this.getBy('civilization', CivilizationType).filter(
+        (cityName: CityName): boolean => cityName.capital()
+      )
+    );
 
-    if (capitalName instanceof CityName) {
-      this.unregister(capitalName);
-
-      return capitalName.name();
+    if (capitalName) {
+      return this.take(capitalName);
     }
 
     return this.takeByCivilization(CivilizationType);
   }
 
+  /**
+   * One draw per pick, whatever the size of the pool. Shuffling with a random
+   * comparator made a number of draws that depended on the pool size, so a
+   * pool that differed at all sent the whole random stream somewhere else,
+   * and the pick was not uniform either.
+   */
+  private pick(cityNames: CityName[]): CityName | null {
+    if (cityNames.length === 0) {
+      return null;
+    }
+
+    return cityNames[
+      Math.floor(this._randomNumberGenerator() * cityNames.length)
+    ];
+  }
+
+  private take(cityName: CityName): string {
+    this.unregister(cityName);
+
+    return cityName.name();
+  }
+
   private takeUnassociated(): string {
-    const [cityName] = this.getBy('civilization', null).sort(
-      (): number => Math.floor(this._randomNumberGenerator() * 3) - 1
-    );
+    const cityName = this.pick(this.getBy('civilization', null));
 
-    if (cityName instanceof CityName) {
-      this.unregister(cityName);
-
-      return cityName.name();
+    if (cityName) {
+      return this.take(cityName);
     }
 
     return `City #${this._counter++}`;
