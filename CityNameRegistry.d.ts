@@ -34,10 +34,13 @@ export declare class CityNameRegistry
    *
    * A record matches on its name *and* its civilization, because names repeat
    * between civilizations; failing that, the same name in the unassociated
-   * pool. This replaces what has been taken rather than adding to it, and it
-   * keeps a record that matches nothing (a pool this game has already drawn
-   * from, or a name a plugin no longer registers), so saving again writes the
-   * same list.
+   * pool. A record this registry has already taken is left alone, so
+   * restoring into a pool that has been drawn from, or restoring twice, never
+   * takes a second name out. This replaces what has been taken rather than
+   * adding to it, keeping each record as given (a record that matches nothing,
+   * a name a plugin no longer registers, included) so saving again writes the
+   * same list. Names taken before and missing from `taken` are not returned
+   * to the pool.
    */
   restore(taken: CityName[], counter: number): void;
   takeByCivilization(CivilizationType: typeof Civilization): string;

@@ -46,13 +46,31 @@ export class CityNameRegistry
    *
    * A record matches on its name *and* its civilization, because names repeat
    * between civilizations; failing that, the same name in the unassociated
-   * pool. This replaces what has been taken rather than adding to it, and it
-   * keeps a record that matches nothing (a pool this game has already drawn
-   * from, or a name a plugin no longer registers), so saving again writes the
-   * same list.
+   * pool. A record this registry has already taken is left alone, so
+   * restoring into a pool that has been drawn from, or restoring twice, never
+   * takes a second name out. This replaces what has been taken rather than
+   * adding to it, keeping each record as given (a record that matches nothing,
+   * a name a plugin no longer registers, included) so saving again writes the
+   * same list. Names taken before and missing from `taken` are not returned
+   * to the pool.
    */
   restore(taken: CityName[], counter: number): void {
+    const previous = [...this._taken];
+    const matches =
+      (record: CityName) =>
+      (cityName: CityName): boolean =>
+        cityName.name() === record.name() &&
+        cityName.civilization() === record.civilization();
+
     this._taken = taken.map((record: CityName): CityName => {
+      const index = previous.findIndex(matches(record));
+
+      if (index !== -1) {
+        previous.splice(index, 1);
+
+        return record;
+      }
+
       const [registered] = [
         ...this.getBy('civilization', record.civilization()),
         ...this.getBy('civilization', null),
@@ -60,13 +78,11 @@ export class CityNameRegistry
         (cityName: CityName): boolean => cityName.name() === record.name()
       );
 
-      if (!registered) {
-        return record;
+      if (registered) {
+        this.unregister(registered);
       }
 
-      this.unregister(registered);
-
-      return registered;
+      return record;
     });
 
     this._counter = counter;

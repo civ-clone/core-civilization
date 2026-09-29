@@ -157,6 +157,34 @@ describe('CityNameRegistry', (): void => {
     registry.restore([new CityName('Utica', Greek)], 1);
 
     expect(registry.getBy('civilization', null)).to.have.length(0);
+    expect(registry.taken()[0].civilization()).to.equal(Greek);
+  });
+
+  it('should not take the unassociated copy of a name restored twice', (): void => {
+    const registry = pool(counting().rng);
+
+    registry.register(new CityName('Athens', null));
+    registry.restore([new CityName('Athens', English)], 1);
+    registry.restore([new CityName('Athens', English)], 1);
+
+    expect(
+      registry
+        .getBy('civilization', null)
+        .map((cityName: CityName): string => cityName.name())
+    ).to.deep.equal(['Utica', 'Athens']);
+    expect(
+      registry.taken().map((cityName) => cityName.civilization())
+    ).to.deep.equal([English]);
+  });
+
+  it('should not take a second name for one already drawn in this game', (): void => {
+    const registry = pool(counting([0]).rng);
+
+    registry.register(new CityName('Athens', null));
+    registry.takeByCivilization(English);
+    registry.restore([new CityName('Athens', English)], 1);
+
+    expect(registry.getBy('civilization', null)).to.have.length(2);
   });
 
   it('should be the same list again when restored twice, or into a used pool', (): void => {
