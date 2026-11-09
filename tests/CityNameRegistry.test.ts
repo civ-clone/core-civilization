@@ -204,4 +204,67 @@ describe('CityNameRegistry', (): void => {
     expect(registry.length).to.equal(5);
     expect(registry.counter()).to.equal(4);
   });
+  describe('claim', (): void => {
+    it('should take a claimed name out of every pool, so no city founded later gets it', (): void => {
+      const registry = pool(counting([0]).rng);
+
+      registry.claim('Athens');
+
+      const greek = [
+          registry.takeCapitalByCivilization(Greek),
+          registry.takeByCivilization(Greek),
+          registry.takeByCivilization(Greek),
+        ],
+        english = [
+          registry.takeCapitalByCivilization(English),
+          registry.takeByCivilization(English),
+        ];
+
+      expect([...greek, ...english]).not.to.include('Athens');
+      expect(
+        registry
+          .taken()
+          .filter((cityName) => cityName.name() === 'Athens')
+          .map((cityName) => cityName.civilization())
+      ).to.have.members([Greek, English]);
+    });
+
+    it('should record a name in no pool once, and keep it across a restore', (): void => {
+      const played = pool(counting().rng);
+
+      played.claim('Rome');
+      played.claim('Rome');
+      played.claim('Athens');
+
+      expect(
+        played.taken().filter((cityName) => cityName.name() === 'Rome')
+      ).to.have.length(1);
+
+      const loaded = pool(counting([0]).rng);
+
+      loaded.restore(played.taken(), played.counter());
+
+      expect(loaded.taken().map((cityName) => cityName.name())).to.include(
+        'Rome'
+      );
+      expect([
+        loaded.takeCapitalByCivilization(Greek),
+        loaded.takeByCivilization(Greek),
+        loaded.takeByCivilization(Greek),
+        loaded.takeCapitalByCivilization(English),
+        loaded.takeByCivilization(English),
+      ]).not.to.include('Athens');
+    });
+
+    it("should take the other civilizations' copies of a name a city was founded with", (): void => {
+      const registry = pool(counting([0]).rng),
+        capital = registry.takeCapitalByCivilization(Greek);
+
+      registry.claim(capital);
+
+      expect(
+        registry.taken().filter((cityName) => cityName.name() === capital)
+      ).to.have.length(2);
+    });
+  });
 });

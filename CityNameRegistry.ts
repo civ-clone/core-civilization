@@ -7,6 +7,7 @@ import Civilization from './Civilization';
 import { instance as rngInstance } from '@civ-clone/core-random';
 
 export interface ICityNameRegistry extends IEntityRegistry<CityName> {
+  claim(name: string): void;
   counter(): number;
   restore(taken: CityName[], counter: number): void;
   takeByCivilization(CivilizationType: typeof Civilization): string;
@@ -34,6 +35,35 @@ export class CityNameRegistry
     super(CityName);
 
     this._randomNumberGenerator = randomNumberGenerator;
+  }
+
+  /**
+   * Take a name given some other way, such as a city renamed by its player, out of every pool, so no city founded
+   * later is given it too (civ-clone/web-renderer#712). Each copy taken is recorded with its civilization, as
+   * `restore` expects, or the name alone if it was in no pool; claiming a name already taken records nothing.
+   */
+  claim(name: string): void {
+    const copies = this.filter(
+      (cityName: CityName): boolean => cityName.name() === name
+    );
+
+    if (copies.length > 0) {
+      copies.forEach((cityName: CityName): void => {
+        this.take(cityName);
+      });
+
+      return;
+    }
+
+    if (
+      this._taken.some(
+        (cityName: CityName): boolean => cityName.name() === name
+      )
+    ) {
+      return;
+    }
+
+    this._taken.push(new CityName(name, null));
   }
 
   /** The next number for a `City #n` name, once every pool is empty. */

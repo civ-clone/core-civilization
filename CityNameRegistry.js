@@ -19,6 +19,24 @@ class CityNameRegistry extends EntityRegistry_1.EntityRegistry {
         this._taken = [];
         this._randomNumberGenerator = randomNumberGenerator;
     }
+    /**
+     * Take a name given some other way, such as a city renamed by its player, out of every pool, so no city founded
+     * later is given it too (civ-clone/web-renderer#712). Each copy taken is recorded with its civilization, as
+     * `restore` expects, or the name alone if it was in no pool; claiming a name already taken records nothing.
+     */
+    claim(name) {
+        const copies = this.filter((cityName) => cityName.name() === name);
+        if (copies.length > 0) {
+            copies.forEach((cityName) => {
+                this.take(cityName);
+            });
+            return;
+        }
+        if (this._taken.some((cityName) => cityName.name() === name)) {
+            return;
+        }
+        this._taken.push(new CityName_1.default(name, null));
+    }
     /** The next number for a `City #n` name, once every pool is empty. */
     counter() {
         return this._counter;
