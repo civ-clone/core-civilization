@@ -4,6 +4,8 @@ exports.instance = exports.CityNameRegistry = void 0;
 const EntityRegistry_1 = require("@civ-clone/core-registry/EntityRegistry");
 const CityName_1 = require("./CityName");
 const core_random_1 = require("@civ-clone/core-random");
+// Names differing only in case are the same name to a player, so a claim of "athens" takes "Athens" too.
+const sameName = (a, b) => a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
 /**
  * A pool of names: each one is handed out once, and leaves the pool.
  *
@@ -20,19 +22,20 @@ class CityNameRegistry extends EntityRegistry_1.EntityRegistry {
         this._randomNumberGenerator = randomNumberGenerator;
     }
     /**
-     * Take a name given some other way, such as a city renamed by its player, out of every pool, so no city founded
-     * later is given it too (civ-clone/web-renderer#712). Each copy taken is recorded with its civilization, as
-     * `restore` expects, or the name alone if it was in no pool; claiming a name already taken records nothing.
+     * Take a name given some other way, such as a city renamed by its player, out of every pool, whatever its case,
+     * so no city founded later is given it too, nor a `City #n` it names (civ-clone/web-renderer#712). Each copy taken
+     * is recorded with its civilization, as `restore` expects, or the name alone if it was in no pool; claiming a name
+     * already taken records nothing.
      */
     claim(name) {
-        const copies = this.filter((cityName) => cityName.name() === name);
+        const copies = this.filter((cityName) => sameName(cityName.name(), name));
         if (copies.length > 0) {
             copies.forEach((cityName) => {
                 this.take(cityName);
             });
             return;
         }
-        if (this._taken.some((cityName) => cityName.name() === name)) {
+        if (this._taken.some((cityName) => sameName(cityName.name(), name))) {
             return;
         }
         this._taken.push(new CityName_1.default(name, null));
@@ -115,7 +118,12 @@ class CityNameRegistry extends EntityRegistry_1.EntityRegistry {
         if (cityName) {
             return this.take(cityName);
         }
-        return `City #${this._counter++}`;
+        // Skipping a number a claim took, as `City #1` renamed by hand, so it isn't handed out again.
+        let name = `City #${this._counter++}`;
+        while (this._taken.some((cityName) => sameName(cityName.name(), name))) {
+            name = `City #${this._counter++}`;
+        }
+        return name;
     }
 }
 exports.CityNameRegistry = CityNameRegistry;

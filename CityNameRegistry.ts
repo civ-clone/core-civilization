@@ -6,6 +6,10 @@ import CityName from './CityName';
 import Civilization from './Civilization';
 import { instance as rngInstance } from '@civ-clone/core-random';
 
+// Names differing only in case are the same name to a player, so a claim of "athens" takes "Athens" too.
+const sameName = (a: string, b: string): boolean =>
+  a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
+
 export interface ICityNameRegistry extends IEntityRegistry<CityName> {
   claim(name: string): void;
   counter(): number;
@@ -38,13 +42,14 @@ export class CityNameRegistry
   }
 
   /**
-   * Take a name given some other way, such as a city renamed by its player, out of every pool, so no city founded
-   * later is given it too (civ-clone/web-renderer#712). Each copy taken is recorded with its civilization, as
-   * `restore` expects, or the name alone if it was in no pool; claiming a name already taken records nothing.
+   * Take a name given some other way, such as a city renamed by its player, out of every pool, whatever its case,
+   * so no city founded later is given it too, nor a `City #n` it names (civ-clone/web-renderer#712). Each copy taken
+   * is recorded with its civilization, as `restore` expects, or the name alone if it was in no pool; claiming a name
+   * already taken records nothing.
    */
   claim(name: string): void {
-    const copies = this.filter(
-      (cityName: CityName): boolean => cityName.name() === name
+    const copies = this.filter((cityName: CityName): boolean =>
+      sameName(cityName.name(), name)
     );
 
     if (copies.length > 0) {
@@ -56,8 +61,8 @@ export class CityNameRegistry
     }
 
     if (
-      this._taken.some(
-        (cityName: CityName): boolean => cityName.name() === name
+      this._taken.some((cityName: CityName): boolean =>
+        sameName(cityName.name(), name)
       )
     ) {
       return;
@@ -181,7 +186,18 @@ export class CityNameRegistry
       return this.take(cityName);
     }
 
-    return `City #${this._counter++}`;
+    // Skipping a number a claim took, as `City #1` renamed by hand, so it isn't handed out again.
+    let name = `City #${this._counter++}`;
+
+    while (
+      this._taken.some((cityName: CityName): boolean =>
+        sameName(cityName.name(), name)
+      )
+    ) {
+      name = `City #${this._counter++}`;
+    }
+
+    return name;
   }
 }
 

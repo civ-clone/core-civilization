@@ -266,5 +266,38 @@ describe('CityNameRegistry', (): void => {
         registry.taken().filter((cityName) => cityName.name() === capital)
       ).to.have.length(2);
     });
+    it('should take a name whatever its case', (): void => {
+      const registry = pool(counting([0]).rng);
+
+      registry.claim('athens');
+
+      expect([
+        registry.takeCapitalByCivilization(Greek),
+        registry.takeByCivilization(Greek),
+        registry.takeByCivilization(Greek),
+        registry.takeCapitalByCivilization(English),
+        registry.takeByCivilization(English),
+      ]).not.to.include('Athens');
+    });
+
+    it('should skip a claimed `City #n`, in the game and after a restore', (): void => {
+      const played = new CityNameRegistry(counting().rng);
+
+      played.claim('City #1');
+      played.claim('city #3');
+
+      expect([
+        played.takeByCivilization(Greek),
+        played.takeByCivilization(Greek),
+      ]).to.deep.equal(['City #2', 'City #4']);
+
+      const unplayed = new CityNameRegistry(counting().rng),
+        loaded = new CityNameRegistry(counting().rng);
+
+      unplayed.claim('City #1');
+      loaded.restore(unplayed.taken(), unplayed.counter());
+
+      expect(loaded.takeByCivilization(Greek)).to.equal('City #2');
+    });
   });
 });

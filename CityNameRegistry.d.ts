@@ -29,9 +29,10 @@ export declare class CityNameRegistry
   private _taken;
   constructor(randomNumberGenerator?: () => number);
   /**
-   * Take a name given some other way, such as a city renamed by its player, out of every pool, so no city founded
-   * later is given it too (civ-clone/web-renderer#712). Each copy taken is recorded with its civilization, as
-   * `restore` expects, or the name alone if it was in no pool; claiming a name already taken records nothing.
+   * Take a name given some other way, such as a city renamed by its player, out of every pool, whatever its case,
+   * so no city founded later is given it too, nor a `City #n` it names (civ-clone/web-renderer#712). Each copy taken
+   * is recorded with its civilization, as `restore` expects, or the name alone if it was in no pool; claiming a name
+   * already taken records nothing.
    */
   claim(name: string): void;
   /** The next number for a `City #n` name, once every pool is empty. */
