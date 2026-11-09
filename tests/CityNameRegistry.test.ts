@@ -299,5 +299,15 @@ describe('CityNameRegistry', (): void => {
 
       expect(loaded.takeByCivilization(Greek)).to.equal('City #2');
     });
+    it('should ignore spaces around a name, and an empty one', (): void => {
+      const registry = pool(counting([0]).rng);
+
+      registry.claim(' Utica ');
+      registry.claim('   ');
+
+      expect(registry.taken().map((cityName) => cityName.name())).to.deep.equal(
+        ['Utica']
+      );
+    });
   });
 });

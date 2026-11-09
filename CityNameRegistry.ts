@@ -6,9 +6,12 @@ import CityName from './CityName';
 import Civilization from './Civilization';
 import { instance as rngInstance } from '@civ-clone/core-random';
 
-// Names differing only in case are the same name to a player, so a claim of "athens" takes "Athens" too.
+// Names differing only in case are the same name to a player, so a claim of "athens" takes "Athens" too. One collator
+//  with a fixed locale, so the answer doesn't depend on the player's (Turkish dotted I) and stays quick in a long game.
+const collator = new Intl.Collator('en', { sensitivity: 'accent' });
+
 const sameName = (a: string, b: string): boolean =>
-  a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
+  collator.compare(a, b) === 0;
 
 export interface ICityNameRegistry extends IEntityRegistry<CityName> {
   claim(name: string): void;
@@ -48,6 +51,12 @@ export class CityNameRegistry
    * already taken records nothing.
    */
   claim(name: string): void {
+    name = name.trim();
+
+    if (name === '') {
+      return;
+    }
+
     const copies = this.filter((cityName: CityName): boolean =>
       sameName(cityName.name(), name)
     );
