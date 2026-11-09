@@ -6,7 +6,15 @@ import CityName from './CityName';
 import Civilization from './Civilization';
 import { instance as rngInstance } from '@civ-clone/core-random';
 
+// Names differing only in case are the same name to a player, so a claim of "athens" takes "Athens" too. One collator
+//  with a fixed locale, so the answer doesn't depend on the player's (Turkish dotted I) and stays quick in a long game.
+const collator = new Intl.Collator('en', { sensitivity: 'accent' });
+
+const sameName = (a: string, b: string): boolean =>
+  collator.compare(a, b) === 0;
+
 export interface ICityNameRegistry extends IEntityRegistry<CityName> {
+  claim(name: string): void;
   counter(): number;
   restore(taken: CityName[], counter: number): void;
   takeByCivilization(CivilizationType: typeof Civilization): string;
@@ -34,6 +42,42 @@ export class CityNameRegistry
     super(CityName);
 
     this._randomNumberGenerator = randomNumberGenerator;
+  }
+
+  /**
+   * Take a name given some other way, such as a city renamed by its player, out of every pool, whatever its case,
+   * so no city founded later is given it too, nor a `City #n` it names (civ-clone/web-renderer#712). Each copy taken
+   * is recorded with its civilization, as `restore` expects, or the name alone if it was in no pool; claiming a name
+   * already taken records nothing.
+   */
+  claim(name: string): void {
+    name = name.trim();
+
+    if (name === '') {
+      return;
+    }
+
+    const copies = this.filter((cityName: CityName): boolean =>
+      sameName(cityName.name(), name)
+    );
+
+    if (copies.length > 0) {
+      copies.forEach((cityName: CityName): void => {
+        this.take(cityName);
+      });
+
+      return;
+    }
+
+    if (
+      this._taken.some((cityName: CityName): boolean =>
+        sameName(cityName.name(), name)
+      )
+    ) {
+      return;
+    }
+
+    this._taken.push(new CityName(name, null));
   }
 
   /** The next number for a `City #n` name, once every pool is empty. */
@@ -151,7 +195,18 @@ export class CityNameRegistry
       return this.take(cityName);
     }
 
-    return `City #${this._counter++}`;
+    // Skipping a number a claim took, as `City #1` renamed by hand, so it isn't handed out again.
+    let name = `City #${this._counter++}`;
+
+    while (
+      this._taken.some((cityName: CityName): boolean =>
+        sameName(cityName.name(), name)
+      )
+    ) {
+      name = `City #${this._counter++}`;
+    }
+
+    return name;
   }
 }
 
