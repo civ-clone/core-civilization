@@ -7,8 +7,8 @@ import Leader from './Leader';
 import LeaderTitle from './Rules/LeaderTitle';
 
 /**
- * What `leader` is called under `government`: the first `LeaderTitle` rule's answer, or `undefined` when none gives
- *  one, which is always the case with no `LeaderTitle` rules.
+ * What `leader` is called under `government`: the first `LeaderTitle` rule's answer that isn't empty, or `undefined`
+ *  when none gives one, which is always the case with no `LeaderTitle` rules. An empty title is no title.
  */
 export const leaderTitle = (
   leader: Leader,
@@ -19,7 +19,7 @@ export const leaderTitle = (
     .process(LeaderTitle, leader, government)
     .find(
       (title: string | undefined | void): title is string =>
-        typeof title === 'string'
+        typeof title === 'string' && title !== ''
     );
 
 export default leaderTitle;

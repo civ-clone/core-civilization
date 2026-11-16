@@ -46,4 +46,20 @@ describe('leaderTitle', (): void => {
       'title.chief'
     );
   });
+
+  it('takes an empty title as no title', (): void => {
+    const ruleRegistry = new RuleRegistry();
+
+    ruleRegistry.register(new LeaderTitle(new Effect(() => '')));
+
+    expect(leaderTitle(leader, new Despotism(), ruleRegistry)).to.equal(
+      undefined
+    );
+
+    ruleRegistry.register(new LeaderTitle(new Effect(() => 'title.chief')));
+
+    expect(leaderTitle(leader, new Despotism(), ruleRegistry)).to.equal(
+      'title.chief'
+    );
+  });
 });

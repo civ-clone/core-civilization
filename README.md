@@ -6,4 +6,5 @@ The civilizations players lead, their leaders, and what each brings: `Civilizati
 ## Leader titles
 
 A `LeaderTitle(leader, government)` rule answers what a leader is called under a government, and the `leaderTitle`
-helper asks the rules for the first answer. With no `LeaderTitle` rules a leader has no title.
+helper asks the rules for the first answer that isn't empty. With no `LeaderTitle` rules, or only empty answers, a
+leader has no title.
